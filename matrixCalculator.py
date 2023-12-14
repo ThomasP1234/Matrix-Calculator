@@ -9,6 +9,9 @@ class GetMatrix:
             print("This means that the number of elements in your matrix but be a square number")
             print("Please re-enter your matrix")
             return (0, "0")
+        
+        if size <= 1:
+            print("Please enter an integer greater than 1")
 
         for id, number in enumerate(matrix):
             try:
@@ -89,7 +92,7 @@ class Minor:
 
 class Determinant(Minor):
     def matrixDeterminant(self, matrix):
-        detTopRowMinors = []
+        detTopRowMinors = []      
         if len(matrix) == 1:
             return matrix[0]
         
@@ -114,6 +117,9 @@ class Determinant(Minor):
 
 class Inverse(Determinant):
     def matrixInverse(self, matrix, determinant):
+        if len(matrix) == 2:
+            return [[matrix[1][1] / determinant, -1 * matrix [0][1] / determinant], [-1 * matrix[1][0] / determinant, matrix[0][0] / determinant]]
+
         minorMatrix = []
         for rowId, row in enumerate(matrix):
             for columnId in range(len(row)):
@@ -151,11 +157,17 @@ class Calculator():
         findDeterminant = Determinant()
         matrixDeterminant = findDeterminant.matrixDeterminant(matrix)
 
-        findInverse = Inverse()
-        approxMatrixInverse = findInverse.matrixInverse(matrix, matrixDeterminant)
+        if matrixDeterminant != 0:
+            print(f"The determinant is {matrixDeterminant}")
+            findInverse = Inverse()
+            approxMatrixInverse = findInverse.matrixInverse(matrix, matrixDeterminant)
 
-        print("\nThe approximate inverse Matrix is:")
-        print("\n".join(["\t".join([str(cell) for cell in rows]) for rows in approxMatrixInverse]))
+            print("\nThe approximate inverse Matrix is:")
+            for rows in approxMatrixInverse:
+                print(*rows, sep='\t')
+
+        else:
+            print("\nThe determinant is 0 so an inverse cannot be calculated")
 
 if __name__ == "__main__":
     calc = Calculator()
