@@ -5,13 +5,23 @@ class GetMatrix:
 
         size = len(matrix)**0.5
         if size.is_integer() == False:
+            print(f"You have entered {size ** 2} numbers")
             print("A determinant can only be found for square matices")
             print("This means that the number of elements in your matrix but be a square number")
             print("Please re-enter your matrix")
             return (0, "0")
         
+        if size >= 10:
+            print("Matrices over 10x10 have been found to take 2 minutes or more during testing")
+            print("Enter 'stop' to cancel this matrix calculation and enter another")
+            answer = input(":").lower()
+            if answer == "stop":
+                print("Enter a new matrix")
+                return (0, "0")
+        
         if size <= 1:
             print("Please enter an integer greater than 1")
+            return (0, "0")
 
         for id, number in enumerate(matrix):
             try:
@@ -32,7 +42,6 @@ class GetMatrix:
         print("\n".join(["\t".join([str(cell) for cell in rows]) for rows in matrix]))
 
         return (matrix, "1")
-
 
     def message(self):
         print("Welcome to the determinant calculator")
