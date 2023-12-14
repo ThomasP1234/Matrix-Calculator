@@ -1,7 +1,6 @@
 def getMinor(matrix, pos):
     rowIgnore = pos[0]
     columnIgnore = pos[1]
-
     minor = []
     rowCounter = 0
     for row in matrix:
@@ -24,112 +23,70 @@ def getMinor(matrix, pos):
 
     return minor
 
-def matrixDeterminant5(matrix):
-    a = matrix[0][0]
-    minorA = getMinor(matrix, (0,0))
-    detMinorA = matrixDeterminant4(minorA)
+def matrixDeterminant(matrix):
+    detTopRowMinors = []
+    if len(matrix) == 1:
+        return matrix[0]
+    
+    elif len(matrix) == 2:
+        ad = matrix[0][0] * matrix[1][1]
+        bc = matrix[1][0] * matrix[0][1]
+        return ad-bc
 
-    b = matrix[0][1]
-    minorB = getMinor(matrix, (0,1))
-    detMinorB = matrixDeterminant4(minorB)
+    for id in range(len(matrix[0])):
+        minor = getMinor(matrix, (0, id))
+        detMinor = matrixDeterminant(minor)
 
-    c = matrix[0][2]
-    minorC = getMinor(matrix, (0,2))
-    detMinorC = matrixDeterminant4(minorC)
+        detTopRowMinors.append(detMinor)
 
-    d = matrix[0][3]
-    minorD = getMinor(matrix, (0,3))
-    detMinorD = matrixDeterminant4(minorD)
-
-    e = matrix[0][4]
-    minorE = getMinor(matrix, (0, 4))
-    detMinorE = matrixDeterminant4(minorE)
-
-    return a*detMinorA - b*detMinorB + c*detMinorC - d*detMinorD + e*detMinorE
-
-def matrixDeterminant4(matrix):
-    a = matrix[0][0]
-    minorA = getMinor(matrix, (0,0))
-    detMinorA = matrixDeterminant3(minorA)
-
-    b = matrix[0][1]
-    minorB = getMinor(matrix, (0,1))
-    detMinorB = matrixDeterminant3(minorB)
-
-    c = matrix[0][2]
-    minorC = getMinor(matrix, (0,2))
-    detMinorC = matrixDeterminant3(minorC)
-
-    d = matrix[0][3]
-    minorD = getMinor(matrix, (0,3))
-    detMinorD = matrixDeterminant3(minorD)
-
-    return a*detMinorA - b*detMinorB + c*detMinorC - d*detMinorD
-
-def matrixDeterminant3(matrix):
-    a = matrix[0][0]
-    minorA = getMinor(matrix, (0,0))
-    detMinorA = matrixDeterminant2(minorA)
-
-    b = matrix[0][1]
-    minorB = getMinor(matrix, (0,1))
-    detMinorB = matrixDeterminant2(minorB)
-
-    c = matrix[0][2]
-    minorC = getMinor(matrix, (0,2))
-    detMinorC = matrixDeterminant2(minorC)
-
-    return a*detMinorA - b*detMinorB + c*detMinorC
-
-def matrixDeterminant2(matrix):
-    ad = matrix[0][0] * matrix[1][1]
-    bc = matrix[1][0] * matrix[0][1]
-    return ad-bc
-
-def matrixDeterminant1(matrix):
-    return matrix[0][0]
+    value = 0
+    for id, determinant in enumerate(detTopRowMinors):
+        if id % 2 != 0:
+            determinant = determinant * -1
+        value += matrix[0][id] * determinant
+    
+    return value
 
 print("Welcome to the determinant calculator")
 print("You can only calculate the determinant of square matrix")
-print("The current limit is a 5x5 matrix")
-size = ""
-while not isinstance(size, int):
-    size = input("Enter the size of your matrix ")
+print("Enter your matrix like this:")
+print("""
+[1 2] --> 1,2,3,4 or 1, 2, 3, 4
+[3 4]
+          
+[1 2 3]
+[4 5 6] --> 1,2,3,4,5,6,7,8,9 or 1, 2, 3, 4, 5, 6, 7, 8, 9
+[7 8 9]
 
-    try:
-        size = int(size)
-    except ValueError:
-        print("Must enter a positive integer less than 5")
-        size = ""
-        continue
+etc.""")
 
-    if size < 1 or size > 5:
-        print("Must enter a positive integer less than 5")
-        size = ""
-        continue
-
-correct = "n"
-
+correct = ""
 while correct != "y":
-    matrix = []
-    for row in range(1,size+1):
-        columnList = []
-        for column in range(1, size+1):
-            value = ""
-            while not isinstance(value, float):
-                value = input(f"Enter the number in row {row}, column {column} ")
-                
-                try:
-                    value = float(value)
-                except ValueError:
-                    print("Must enter a number")
+    matrix = input(":")
+    matrix = matrix.replace(" ", "")
+    matrix = matrix.split(",")
 
-            if value.is_integer() == True:
-                columnList.append(int(value))
+    size = len(matrix)**0.5
+    if size.is_integer() == False:
+        print("A determinant can only be found for square matices")
+        print("This means that the number of elements in your matrix but be a square number")
+        print("Please re-enter your matrix")
+        continue
+
+    for id, number in enumerate(matrix):
+        try:
+            float(number)
+
+            if int(number) == float(number):
+                matrix[id] = int(number)
             else:
-                columnList.append(value)
+                matrix[id] = float(number)
+        except ValueError:
+            print("Your matrix contains values that aren\'t numbers")
+            continue
 
-        matrix.append(columnList)
+    size = int(size)
+    matrix = [matrix[i:i+size] for i in range(0, len(matrix), size)]
 
     print("Your Matrix")
     print("\n".join(["\t".join([str(cell) for cell in rows]) for rows in matrix]))
@@ -137,7 +94,6 @@ while correct != "y":
     correct = input("Is this Matrix correct? (y/n) ").lower()
     if correct == "n":
         print("Restarting Matrix input")
+newDeterminant = matrixDeterminant(matrix)
 
-determinant = globals()[f'matrixDeterminant{size}'](matrix) 
-
-print(f"The determinant of the matrix is {determinant}")
+print(f"The determinant of the matrix is {newDeterminant}")
