@@ -66,20 +66,20 @@ class GetMatrix {
         }
         int size = (int)Math.sqrt(halfMatrix.length);
 
-        if (size >= 10) {
-            String warningMessage = """
-                    Matrices over 10x10 have been found to take 2 minutes or more during testing
-                    Enter 'stop' to cancel this matrix calculation and enter another""";
-            System.out.println(warningMessage);
-            Scanner warningScanner = new Scanner(System.in);
-            System.out.println(":");
-            String answer = warningScanner.nextLine();
-            warningScanner.close();
+        // if (size >= 10) {
+        //     String warningMessage = """
+        //             Matrices over 10x10 have been found to take 2 minutes or more during testing
+        //             Enter 'stop' to cancel this matrix calculation and enter another""";
+        //     System.out.println(warningMessage);
+        //     Scanner warningScanner = new Scanner(System.in);
+        //     System.out.println(":");
+        //     String answer = warningScanner.nextLine();
+        //     warningScanner.close();
 
-            if (answer.toLowerCase() == "stop") {
-                return returnBad;
-            }
-        }
+        //     if (answer.toLowerCase() == "stop") {
+        //         return returnBad;
+        //     }
+        // }
 
         float[][] matrix = new float[size][size];
         float value;
